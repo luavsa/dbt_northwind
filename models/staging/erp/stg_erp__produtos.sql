@@ -11,8 +11,8 @@ WITH
             CAST(UNITSONORDER as int) as unidade_por_pedido,
             CAST(REORDERLEVEL as int) as nivel_de_pedido,
         CASE
-            WHEN DISCONTINUED = 0 THEN 'não'
-            WHEN DISCONTINUED = 1 THEN 'sim'
+            WHEN DISCONTINUED = 0 THEN 'Não'
+            WHEN DISCONTINUED = 1 THEN 'Sim'
             END AS is_discontinuado
         FROM {{ source('erp', 'product') }}
     )
