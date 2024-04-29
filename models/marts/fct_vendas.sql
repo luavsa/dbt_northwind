@@ -9,9 +9,19 @@ WITH
         FROM {{ ref('dim_produtos') }}
     ),
 
-     dim_funcionarios AS (
+    dim_funcionarios AS (
         SELECT *
         FROM {{ ref('dim_funcionarios') }}
+    ),
+
+    dim_clientes AS (
+        SELECT *
+        FROM {{ ref('dim_clientes') }}
+    ),
+
+    dim_transportadoras AS (
+        SELECT * 
+        FROM {{ ref('dim_transportadoras') }}
     ),
 
     joined AS (
@@ -27,10 +37,10 @@ WITH
             fatos.QUANTIDADE,
             fatos.DATA_DO_PEDIDO,
             fatos.FRETE,
-            fatos.NM_DESTINATARIO,
-            fatos.CIDADE_DESTINATARIO,
-            fatos.REGIAO_DESTINATARIO,
-            fatos.PAIS_DESTINATARIO,
+            dim_clientes.NM_CLIENTE,
+            dim_clientes.CIDADE_CLIENTE,
+            dim_clientes.PAIS_CLIENTE,
+            dim_clientes.REGIAO_CLIENTE,
             fatos.DATA_DO_ENVIO,
             fatos.DATA_REQUERIDA_ENTREGA,
             dim_produtos.NM_PRODUTO,
@@ -40,6 +50,7 @@ WITH
             dim_produtos.NM_FORNECEDOR,
             dim_produtos.CIDADE_FORNECEDOR,
             dim_produtos.PAIS_FORNECEDOR,
+            dim_transportadoras.NM_TRANSPORTADORA,
             dim_funcionarios.NM_FUNCIONARIO,
             dim_funcionarios.CARGO_FUNCIONARIO,
             dim_funcionarios.DT_CONTRATACAO,
@@ -49,6 +60,10 @@ WITH
             ON fatos.fk_produto = dim_produtos.pk_produto
         LEFT JOIN dim_funcionarios
             ON fatos.fk_funcionario = dim_funcionarios.pk_funcionario
+        LEFT JOIN dim_clientes
+            ON fatos.FK_CLIENTE = dim_clientes.pk_cliente
+        LEFT JOIN dim_transportadoras
+            ON fatos.fk_transportadora = dim_transportadoras.PK_TRANSPORTADORA
     ),
 
     metricas AS (
@@ -65,10 +80,10 @@ WITH
             DATA_DO_PEDIDO,
             DATA_DO_ENVIO,
             DATA_REQUERIDA_ENTREGA,
-            NM_DESTINATARIO,
-            CIDADE_DESTINATARIO,
-            REGIAO_DESTINATARIO,
-            PAIS_DESTINATARIO,
+            NM_CLIENTE,
+            CIDADE_CLIENTE,
+            PAIS_CLIENTE,
+            REGIAO_CLIENTE,
             NM_PRODUTO,
             IS_DISCONTINUADO,
             NM_CATEGORIA,
@@ -76,6 +91,7 @@ WITH
             NM_FORNECEDOR,
             CIDADE_FORNECEDOR,
             PAIS_FORNECEDOR,
+            NM_TRANSPORTADORA,
             NM_FUNCIONARIO,
             CARGO_FUNCIONARIO,
             DT_CONTRATACAO,
